@@ -2,6 +2,6 @@ POST http://localhost:3001/api/names
 content-type: application/json
 
 {
-    "name": "sasssmple",
-    "number": "12453-123-123"
+    "name": "uliuldfgadhsgfngfnhdgfdfhgdui",
+    "number": "234234234534534564564256423"
 }
