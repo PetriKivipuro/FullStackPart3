@@ -40,6 +40,12 @@ let names = [
       response.json(names)
     })
 
+    app.get('/info', (request, response) =>{
+      const listLength = names.length
+      response.send("Phonebook has info for " + listLength + " people" + '</br>' + new Date())
+    } )
+
+
     const generateId = () => {
       const maxId = names.length > 0
         ? Math.max(...names.map(n => n.id))
@@ -47,16 +53,28 @@ let names = [
       return maxId + 1
     }
     app.post('/api/names', (request, response) => {
+      const body = request.body
       
-      if(!body.content) {
+      if(!body.name) {
         return response.status(400).json({
-          error: 'content missing'
+          error: 'name missing'
         })
       }
+      if(!body.number) {
+        return response.status(400).json({
+          error: 'number missing'
+        })
+      }
+      if(names.some(person => person.name.toLowerCase() === body.name.toLowerCase()))
+      {
+        return response.status(400).json({
+          error: body.name + ' is already in phonebook'
+        })
+      }
+      
              const name = {
-          content: body.content,
-          important: body.important || false,
-          date: new Date(),
+          name: body.name,
+          number: body.number,
           id: generateId(),
       }
       names = names.concat(name)
@@ -72,7 +90,7 @@ let names = [
         if(name) {
             response.json(name)
         } else{
-            response.status(400).end()
+            response.status(404).end()
         }
         })
 
