@@ -2,6 +2,6 @@ POST http://localhost:3001/api/names
 content-type: application/json
 
 {
-    "name": "uliuldfgadhsgfngfnhdgfdfhgdui",
-    "number": "234234234534534564564256423"
+    "name": "Tämän tehtävä on uusin 13.12.20202",
+    "number": "2345098"
 }

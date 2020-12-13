@@ -1,8 +1,11 @@
+require('dotenv').config()
 const { request, response } = require('express')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+const Name = require('./models/name')
+
 
 app.use(express.json())
 app.use(morgan('tiny'))
@@ -18,7 +21,6 @@ morgan.token('body', function (req, res) {
 })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-
 
 let names = [
   {
@@ -53,7 +55,9 @@ let names = [
   }
 ]
 app.get('/api/names', (request, response) => {
-  response.json(names)
+  Name.find({}).then(names => {
+    response.json(names)
+  })
 })
 
 app.get('/info', (request, response) => {
@@ -68,45 +72,42 @@ const generateId = () => {
     : 0
   return maxId + 1
 }
+//alkuperäinen on notepadissa
 app.post('/api/names', (request, response) => {
   const body = request.body
 
-  if (!body.name) {
+  if (body.name === undefined) {
     return response.status(400).json({
       error: 'name missing'
     })
   }
-  if (!body.number) {
+  if (body.number === undefined) {
     return response.status(400).json({
       error: 'number missing'
     })
   }
-  if (names.some(person => person.name.toLowerCase() === body.name.toLowerCase())) {
+  if (names.some(Nameon => Nameon.name.toLowerCase() === body.name.toLowerCase())) {
     return response.status(400).json({
       error: body.name + ' is already in phonebook'
     })
   }
 
-  const name = {
+  const name = new Name({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  }
-  names = names.concat(name)
-
-  response.json(name)
+    id: generateId()
+  })
+  name.save().then(savedName => {
+    response.json(savedName)
+  })
 })
 
+// tämänkin alkuperäinen notepadissa
 
 app.get('/api/names/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const name = names.find(name => name.id === id)
-
-  if (name) {
+  Name.findById(request.params.id).then(note => {
     response.json(name)
-  } else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.delete('/api/names/:id', (request, response) => {
@@ -117,7 +118,7 @@ app.delete('/api/names/:id', (request, response) => {
 })
 console.log(request.headers)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
