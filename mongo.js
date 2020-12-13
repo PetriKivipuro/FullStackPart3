@@ -15,25 +15,34 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 const nameSchema = new mongoose.Schema({
   name: String,
   number: String,
-  })
+})
 
 const Name = mongoose.model('Name', nameSchema)
 
-const name = new Name({
-  name: 'Baaaaaaaaa',
-  number: 46544,
-  })
+/* const name = new Name({
+  name: 'Baavnbmvbaaaaaaa',
+  number: 4645645544,
+}) */
 
- const find = Name.find({}).then(result => {
+if (process.argv.length === 3) {
+
+  Name.find({}).then(result => {
     result.forEach(name => {
-        console.log(name.name + " " + name.number)
+      console.log(name.name + " " + name.number)
     })
     mongoose.connection.close()
-  }) 
+  })
+}
 
-
-  // saves new name
- /* name.save().then(result => {
-  console.log('added ' + name.name+ " " + name.number + " to the phonebook" )
-  mongoose.connection.close()
-})  */
+if (process.argv.length > 3) {
+  const nameHuman = process.argv[3]
+  const numer = process.argv[4]
+  const name = new Name({
+    name: nameHuman,
+    number: numer
+  })
+  name.save().then(result => {
+    console.log('added Name: ' + name.name + ", Number: " + name.number + " to the phonebook")
+    mongoose.connection.close()
+  })
+}

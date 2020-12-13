@@ -1,2 +1,2 @@
-GET http://localhost:3001/api/names
+GET https://protected-taiga-81971.herokuapp.com/api/names
 ###
