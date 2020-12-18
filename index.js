@@ -28,9 +28,12 @@ app.get('/api/names', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  const listLength = names.length
-  response.send("Phonebook has info for " + listLength + " people" + '</br>' + new Date())
+  
+  Name.find(request.params).then(name => 
+    response.send('Phonebook has info for ' + name.length + ' people' + '</br>' +
+    new Date()))
 })
+
 
 
 app.post('/api/names', (request, response, next) => {
@@ -54,6 +57,22 @@ app.get('/api/names/:id', (request, response, next) => {
   })
   .catch(error => next(error))
 })
+
+
+app.put('/api/names/:id', (request, response, next) => {
+  const body = request.body
+  const name = {
+    number: body.number
+  }
+
+  Name
+  .findByIdAndUpdate(request.params.id, name, {new: true})
+  .then(name => {
+    response.json(name)
+  })
+  .catch(error => next(error))
+})
+
 
 
 app.delete('/api/names/:id', (request, response, next) => {
