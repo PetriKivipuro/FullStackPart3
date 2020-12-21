@@ -28,10 +28,10 @@ app.get('/api/names', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  
-  Name.find(request.params).then(name => 
+
+  Name.find(request.params).then(name =>
     response.send('Phonebook has info for ' + name.length + ' people' + '</br>' +
-    new Date()))
+      new Date()))
 })
 
 
@@ -46,16 +46,16 @@ app.post('/api/names', (request, response, next) => {
   name.save().then(savedName => {
     response.json(savedName.toJSON())
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 // tämänkin alkuperäinen notepadissa
 
 app.get('/api/names/:id', (request, response, next) => {
-  Name.findById(request.params.id).then(name =>{
+  Name.findById(request.params.id).then(name => {
     response.json(name)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 
@@ -66,35 +66,33 @@ app.put('/api/names/:id', (request, response, next) => {
   }
 
   Name
-  .findByIdAndUpdate(request.params.id, name, {new: true})
-  .then(name => {
-    response.json(name)
-  })
-  .catch(error => next(error))
+    .findByIdAndUpdate(request.params.id, name, { new: true })
+    .then(name => {
+      response.json(name)
+    })
+    .catch(error => next(error))
 })
-
-
 
 app.delete('/api/names/:id', (request, response, next) => {
   Name.findByIdAndRemove(request.params.id).then(name => {
-   response.status(204).end()
+    response.status(204).end()
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 console.log(request.headers)
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if(error.name === 'CastError') {
-    return response.status(400).send({error: 'malformatted id'})
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
   }
   next(error)
 }
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT 
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
